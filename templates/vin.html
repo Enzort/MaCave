@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>{{ v.domaine }} - {{ v.nom }} {{ v.millesime }}</h2>
+{% if v.photo %}<p><img src="{{ url_for('static', filename='uploads/' + v.photo) }}" alt="Étiquette" width="150"></p>{% endif %}
+<ul>
+  <li>Type : {{ v.type }}</li>
+  <li>Région : {{ v.region }}</li>
+  <li>Description : {{ v.description }}</li>
+  <li>Note communautaire : {{ note_texte(moyenne) }}</li>
+</ul>
+
+<h3>Mes exemplaires en stock ({{ exemplaires|length }})</h3>
+{% if exemplaires %}
+<table border="1">
+  <tr><th>Étagère</th><th>Prix d'achat</th><th>Date d'ajout</th></tr>
+  {% for x in exemplaires %}
+  <tr>
+    <td>{{ x.etagere_nom }}</td>
+    <td>{{ "%.2f"|format(x.prix_achat) }} €</td>
+    <td>{{ x.date_ajout }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Vous n'avez aucun exemplaire de ce vin.</p>
+{% endif %}
+
+<h3>Ajouter des bouteilles</h3>
+{% if etageres %}
+<form action="{{ url_for('ajouter_bouteilles', vin_id=v.id) }}" method="post">
+  <p><label for="etagere">Étagère :</label>
+     <select id="etagere" name="etagere">
+       {% for e in etageres %}<option value="{{ e.id }}">{{ e.nom }} ({{ e.occupation() }}/{{ e.capacite_max }})</option>{% endfor %}
+     </select></p>
+  <p><label for="quantite">Quantité :</label>
+     <input type="number" id="quantite" name="quantite" min="1" value="1" required></p>
+  <p><label for="prix">Prix d'achat unitaire (€) :</label>
+     <input type="text" id="prix" name="prix" required></p>
+  <p><button type="submit">Ajouter</button></p>
+</form>
+{% else %}
+<p>Créez d'abord une <a href="{{ url_for('etageres') }}">étagère</a>.</p>
+{% endif %}
+
+<h3>Évaluations de la communauté</h3>
+{% if evaluations %}
+<table border="1">
+  <tr><th>Auteur</th><th>Date</th><th>Note</th><th>Commentaire</th><th>Action</th></tr>
+  {% for e in evaluations %}
+  <tr>
+    <td>{{ e.auteur }}</td>
+    <td>{{ e.date }}</td>
+    <td>{{ e.note }}/20</td>
+    <td>{{ e.commentaire or '' }}</td>
+    <td>{% if e.auteur_id == g.user.id %}<a href="{{ url_for('modifier_evaluation', evaluation_id=e.evaluation_id) }}">Modifier</a>{% endif %}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Non évalué.</p>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MaCave</title>
+<style>
+/* MaCave - style intégré, palette bleu marine */
+:root{
+  --marine:#16314f;      /* navy foncé : en-tête */
+  --marine2:#1f4068;     /* navy intermédiaire */
+  --bleu:#2c6ca3;        /* bleu : liens, boutons */
+  --bleu-clair:#4a90c2;  /* bleu clair : survol, focus */
+  --fond:#eef3f9;        /* fond bleu très clair */
+  --carte:#ffffff;
+  --bordure:#d3e0ee;
+  --texte:#1b2733;
+  --gris:#566574;
+  --vert:#2e7d52;
+  --rouge:#c0392b;
+}
+*{ box-sizing:border-box; }
+body{
+  font-family:-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  color:var(--texte); background:var(--fond); margin:0; line-height:1.55;
+}
+/* En-tête */
+h1{
+  background:var(--marine); color:#fff; margin:0; padding:18px 28px;
+  font-size:1.5rem; letter-spacing:.5px;
+}
+/* Colonne de lecture centrée */
+body > *:not(h1){ max-width:960px; margin-left:auto; margin-right:auto; }
+body > p, body > form, body > hr, body > h2, body > h3, body > table, body > ul{
+  padding-left:28px; padding-right:28px;
+}
+h2{ color:var(--marine); border-bottom:2px solid var(--bordure); padding-bottom:6px; }
+h3{ color:var(--marine2); margin-top:28px; }
+a{ color:var(--bleu); text-decoration:none; }
+a:hover{ text-decoration:underline; }
+hr{ border:none; border-top:1px solid var(--bordure); margin:4px 0 18px; }
+/* Barre de navigation (1er <p> après le titre) */
+h1 + p{
+  background:var(--carte); padding:12px 28px; margin:0;
+  border-bottom:1px solid var(--bordure); font-size:.95rem;
+}
+h1 + p a{ margin-right:4px; }
+/* Bandeau de déconnexion */
+h1 ~ form[action$="deconnexion"]{
+  padding:8px 28px; font-size:.85rem; color:var(--gris);
+  background:var(--carte); border-bottom:1px solid var(--bordure); margin:0;
+}
+/* Tableaux */
+table{
+  border-collapse:collapse; width:calc(100% - 56px); margin:14px 28px;
+  background:var(--carte); box-shadow:0 1px 3px rgba(22,49,79,.08);
+}
+table[border]{ border:none !important; }
+th, td{ border:1px solid var(--bordure) !important; padding:8px 10px; text-align:left; }
+th{ background:#e7eff7; color:var(--marine); font-weight:600; }
+tr:nth-child(even) td{ background:#f6f9fc; }
+/* Formulaires */
+form{ margin:12px 0; }
+label{ font-weight:600; color:var(--gris); margin-right:6px; }
+input[type=text],input[type=password],input[type=email],input[type=number],
+select,textarea{
+  padding:7px 9px; border:1px solid var(--bordure); border-radius:6px;
+  font:inherit; background:#fff; margin:3px 0;
+}
+input:focus,select:focus,textarea:focus{
+  outline:none; border-color:var(--bleu-clair);
+  box-shadow:0 0 0 2px rgba(74,144,194,.25);
+}
+/* Boutons */
+button{
+  background:var(--bleu); color:#fff; border:none; padding:8px 15px;
+  border-radius:6px; font:inherit; cursor:pointer;
+}
+button:hover{ background:var(--marine2); }
+/* Messages flash */
+.flash{
+  border-radius:6px; padding:10px 16px; margin:12px 28px;
+  width:calc(100% - 56px); border-left:4px solid var(--gris); background:#fff;
+}
+.flash b{ text-transform:capitalize; }
+.flash-succès{ border-left-color:var(--vert); background:#eef7f1; }
+.flash-erreur{ border-left-color:var(--rouge); background:#fcecea; }
+.flash-info{ border-left-color:var(--bleu-clair); background:#eaf2fa; }
+/* Listes du tableau de bord */
+ul{
+  background:var(--carte); border:1px solid var(--bordure); border-radius:8px;
+  padding:14px 28px 14px 48px; margin:14px 28px; width:calc(100% - 56px);
+}
+img{ border-radius:8px; border:1px solid var(--bordure); }
+</style>
+</head>
+<body>
+<h1>MaCave</h1>
+{% if g.user %}
+<p>
+  <a href="{{ url_for('index') }}">Accueil</a> |
+  <a href="{{ url_for('etageres') }}">Mes étagères</a> |
+  <a href="{{ url_for('stock') }}">Mon stock</a> |
+  <a href="{{ url_for('historique') }}">Mon historique</a> |
+  <a href="{{ url_for('vins') }}">Catalogue des vins</a> |
+  <a href="{{ url_for('profil') }}">Mon profil</a>
+</p>
+<form action="{{ url_for('deconnexion') }}" method="post">
+  Connecté : {{ g.user.identifiant }}
+  <button type="submit">Se déconnecter</button>
+</form>
+{% endif %}
+<hr>
+{% for categorie, message in get_flashed_messages(with_categories=true) %}
+<p class="flash flash-{{ categorie }}"><b>{{ categorie }} :</b> {{ message }}</p>
+{% endfor %}
+{% block contenu %}{% endblock %}
+</body>
+</html>

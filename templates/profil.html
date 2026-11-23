@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Mon profil</h2>
+<p>Identifiant : {{ g.user.identifiant }}</p>
+
+<h3>Modifier mon adresse électronique</h3>
+<form method="post">
+  <input type="hidden" name="action" value="email">
+  <p><label for="email">Adresse électronique :</label>
+     <input type="email" id="email" name="email" value="{{ g.user.email }}" required></p>
+  <p><button type="submit">Enregistrer</button></p>
+</form>
+
+<h3>Modifier mon mot de passe</h3>
+<form method="post">
+  <input type="hidden" name="action" value="mot_de_passe">
+  <p><label for="actuel">Mot de passe actuel :</label>
+     <input type="password" id="actuel" name="actuel" required></p>
+  <p><label for="nouveau">Nouveau mot de passe :</label>
+     <input type="password" id="nouveau" name="nouveau" required></p>
+  <p><label for="confirmation">Confirmer le nouveau mot de passe :</label>
+     <input type="password" id="confirmation" name="confirmation" required></p>
+  <p><button type="submit">Changer le mot de passe</button></p>
+</form>
+{% endblock %}

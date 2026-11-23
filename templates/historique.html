@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Mon historique de dégustations</h2>
+
+<form method="get">
+  <label for="q">Recherche (nom ou domaine) :</label>
+  <input type="text" id="q" name="q" value="{{ request.args.get('q', '') }}">
+  <label for="type">Type :</label>
+  <select id="type" name="type">
+    <option value="">Tous</option>
+    {% for t in types_vin %}<option value="{{ t }}" {% if request.args.get('type') == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+  </select>
+  <label for="tri">Trier par :</label>
+  <select id="tri" name="tri">
+    {% for cle, texte in [('date_sortie','Date de sortie'),('domaine','Domaine'),('nom','Nom'),('type','Type'),('millesime','Millésime'),('region','Région'),('note_perso','Ma note'),('note_moyenne','Note communautaire')] %}
+    <option value="{{ cle }}" {% if request.args.get('tri') == cle %}selected{% endif %}>{{ texte }}</option>
+    {% endfor %}
+  </select>
+  <label for="ordre">Ordre :</label>
+  <select id="ordre" name="ordre">
+    <option value="desc">Décroissant</option>
+    <option value="asc" {% if request.args.get('ordre') == 'asc' %}selected{% endif %}>Croissant</option>
+  </select>
+  <button type="submit">Filtrer</button>
+</form>
+
+{% if lignes %}
+<table border="1">
+  <tr>
+    <th>Date</th><th>Domaine</th><th>Nom</th><th>Type</th><th>Millésime</th><th>Région</th>
+    <th>Ma note</th><th>Mon commentaire</th><th>Note communautaire</th><th>Action</th>
+  </tr>
+  {% for l in lignes %}
+  <tr>
+    <td>{{ l.date_sortie }}</td>
+    <td>{{ l.domaine }}</td>
+    <td><a href="{{ url_for('vin', vin_id=l.vin_id) }}">{{ l.nom }}</a></td>
+    <td>{{ l.type }}</td>
+    <td>{{ l.millesime }}</td>
+    <td>{{ l.region }}</td>
+    <td>{{ l.note_perso }}/20</td>
+    <td>{{ l.commentaire or '' }}</td>
+    <td>{{ note_texte(l.note_moyenne) }}</td>
+    <td><a href="{{ url_for('modifier_evaluation', evaluation_id=l.evaluation_id) }}">Modifier</a></td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Aucune dégustation dans l'historique.</p>
+{% endif %}
+{% endblock %}

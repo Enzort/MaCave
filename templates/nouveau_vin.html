@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Nouvelle référence de vin</h2>
+<form method="post" enctype="multipart/form-data">
+  <p><label for="domaine">Domaine :</label>
+     <input type="text" id="domaine" name="domaine" value="{{ f.get('domaine', '') }}" required></p>
+  <p><label for="nom">Nom / cuvée :</label>
+     <input type="text" id="nom" name="nom" value="{{ f.get('nom', '') }}" required></p>
+  <p><label for="type">Type :</label>
+     <select id="type" name="type">
+       {% for t in types_vin %}<option value="{{ t }}" {% if f.get('type') == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+     </select></p>
+  <p><label for="millesime">Millésime :</label>
+     <input type="number" id="millesime" name="millesime" value="{{ f.get('millesime', '') }}" required></p>
+  <p><label for="region">Région :</label>
+     <input type="text" id="region" name="region" value="{{ f.get('region', '') }}" required></p>
+  <p><label for="description">Description :</label><br>
+     <textarea id="description" name="description" rows="4" cols="50">{{ f.get('description', '') }}</textarea></p>
+  <p><label for="photo">Photo de l'étiquette (png, jpg, jpeg, webp) :</label>
+     <input type="file" id="photo" name="photo"></p>
+  <p><button type="submit">Créer la référence</button></p>
+</form>
+{% endblock %}

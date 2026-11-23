@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Étagère : {{ e.nom }}</h2>
+<p>Occupation : {{ e.occupation() }}/{{ e.capacite_max }}</p>
+
+<h3>Contenu</h3>
+{% if contenu %}
+<table border="1">
+  <tr><th>Domaine</th><th>Nom</th><th>Type</th><th>Millésime</th><th>Région</th><th>Prix d'achat</th></tr>
+  {% for b in contenu %}
+  <tr>
+    <td>{{ b.domaine }}</td>
+    <td><a href="{{ url_for('vin', vin_id=b.vin_id) }}">{{ b.nom }}</a></td>
+    <td>{{ b.type }}</td>
+    <td>{{ b.millesime }}</td>
+    <td>{{ b.region }}</td>
+    <td>{{ "%.2f"|format(b.prix_achat) }} €</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Cette étagère est vide.</p>
+{% endif %}
+
+<h3>Renommer</h3>
+<form action="{{ url_for('renommer_etagere', etagere_id=e.id) }}" method="post">
+  <p><label for="nom">Nouveau nom :</label>
+     <input type="text" id="nom" name="nom" value="{{ e.nom }}" required>
+     <button type="submit">Renommer</button></p>
+</form>
+
+<h3>Modifier la capacité</h3>
+<form action="{{ url_for('capacite_etagere', etagere_id=e.id) }}" method="post">
+  <p><label for="capacite">Capacité maximale :</label>
+     <input type="number" id="capacite" name="capacite" min="1" value="{{ e.capacite_max }}" required>
+     <button type="submit">Modifier</button></p>
+</form>
+
+<h3>Supprimer</h3>
+<form action="{{ url_for('supprimer_etagere', etagere_id=e.id) }}" method="post">
+  <button type="submit">Supprimer cette étagère</button>
+</form>
+{% endblock %}

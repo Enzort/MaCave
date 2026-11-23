@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Archiver après dégustation</h2>
+<p>{{ vin.domaine }} - {{ vin.nom }} {{ vin.millesime }} ({{ vin.type }}, {{ vin.region }})</p>
+<form method="post">
+  <p><label for="note">Note (entier de 0 à 20) :</label>
+     <input type="number" id="note" name="note" min="0" max="20" required></p>
+  <p><label for="commentaire">Commentaire (facultatif) :</label><br>
+     <textarea id="commentaire" name="commentaire" rows="4" cols="50"></textarea></p>
+  <p><button type="submit">Enregistrer la dégustation</button>
+     <a href="{{ url_for('stock') }}">Annuler</a></p>
+</form>
+{% endblock %}

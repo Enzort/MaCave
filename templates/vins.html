@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block contenu %}
+<h2>Catalogue des vins</h2>
+<p><a href="{{ url_for('nouveau_vin') }}">Ajouter une nouvelle référence</a></p>
+
+<form method="get">
+  <label for="q">Recherche (nom ou domaine) :</label>
+  <input type="text" id="q" name="q" value="{{ request.args.get('q', '') }}">
+  <label for="type">Type :</label>
+  <select id="type" name="type">
+    <option value="">Tous</option>
+    {% for t in types_vin %}<option value="{{ t }}" {% if request.args.get('type') == t %}selected{% endif %}>{{ t }}</option>{% endfor %}
+  </select>
+  <label for="tri">Trier par :</label>
+  <select id="tri" name="tri">
+    {% for cle, texte in [('domaine','Domaine'),('nom','Nom'),('type','Type'),('millesime','Millésime'),('region','Région'),('note_moyenne','Note communautaire')] %}
+    <option value="{{ cle }}" {% if request.args.get('tri') == cle %}selected{% endif %}>{{ texte }}</option>
+    {% endfor %}
+  </select>
+  <label for="ordre">Ordre :</label>
+  <select id="ordre" name="ordre">
+    <option value="asc">Croissant</option>
+    <option value="desc" {% if request.args.get('ordre') == 'desc' %}selected{% endif %}>Décroissant</option>
+  </select>
+  <button type="submit">Filtrer</button>
+</form>
+
+{% if lignes %}
+<table border="1">
+  <tr><th>Domaine</th><th>Nom</th><th>Type</th><th>Millésime</th><th>Région</th><th>Note communautaire</th></tr>
+  {% for l in lignes %}
+  <tr>
+    <td>{{ l.domaine }}</td>
+    <td><a href="{{ url_for('vin', vin_id=l.id) }}">{{ l.nom }}</a></td>
+    <td>{{ l.type }}</td>
+    <td>{{ l.millesime }}</td>
+    <td>{{ l.region }}</td>
+    <td>{{ note_texte(l.note_moyenne) }}</td>
+  </tr>
+  {% endfor %}
+</table>
+{% else %}
+<p>Aucun vin trouvé.</p>
+{% endif %}
+{% endblock %}
